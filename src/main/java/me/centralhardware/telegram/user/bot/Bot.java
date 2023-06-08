@@ -40,7 +40,8 @@ public class Bot extends TelegramLongPollingBot {
                 .id("1")
                 .title("let me google that for you")
                 .inputMessageContent(InputTextMessageContent.builder()
-                        .messageText(String.format("https://letmegooglethat.com/?q=%s", query))
+                        .messageText(String.format("<a href=\"https://letmegooglethat.com/?q=%s\">let me google that for you</a>", query))
+                        .parseMode("HTML")
                         .build())
                 .build();
 
