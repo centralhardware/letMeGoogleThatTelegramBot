@@ -8,7 +8,7 @@ FROM bitnami/java:20
 
 WORKDIR /znatokiBot
 
-COPY --from=maven bot/target/letMeGoogleThatForYou-1.0-SNAPSHOT.jar .
+COPY --from=maven target/letMeGoogleThatForYou-1.0-SNAPSHOT.jar .
 
 RUN apt update -y && \
     apt upgrade -y && \
