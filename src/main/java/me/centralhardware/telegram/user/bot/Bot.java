@@ -1,6 +1,7 @@
 package me.centralhardware.telegram.user.bot;
 
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -30,6 +31,14 @@ public class Bot extends TelegramLongPollingBot {
         InlineQuery inlineQuery = update.getInlineQuery();
 
         String query = inlineQuery.getQuery();
+
+        if (StringUtils.isBlank(query)){
+            var shrugs = getArticle("shrugs",  "¯\\_(ツ)_/¯", "1");
+            var usePastebin = getArticle("use pastebin",
+                    "Please use pastebin.com, gist.github.com for share code or other long read text material",
+                    "2");
+            send(inlineQuery, shrugs, usePastebin);
+        }
 
         var letMeGoogleThatForYou = getArticle("letmegooglethat.com",
                 getHtmlLink(getLetMeGoogleThatUrl(query), query),
