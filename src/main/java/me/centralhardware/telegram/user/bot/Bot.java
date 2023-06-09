@@ -31,17 +31,20 @@ public class Bot extends TelegramLongPollingBot {
 
         String query = inlineQuery.getQuery();
 
-        InlineQueryResultArticle letMeGoogleThatForYou = getArticle("letmegooglethat.com",
+        var letMeGoogleThatForYou = getArticle("letmegooglethat.com",
                 getHtmlLink(getLetMeGoogleThatUrl(query), query),
                 "1");
-        InlineQueryResultArticle lmgfty = getArticle("lmgtfy.app",
+        var lmgfty = getArticle("lmgtfy.app",
                 getHtmlLink(getLmgtfyUrl(query), query),
                 "2");
-        InlineQueryResultArticle google = getArticle("google.com",
+        var google = getArticle("google.com",
                 getHtmlLink(getGoogleUrl(query), query),
                 "3");
+        var stackoverflow = getArticle("stackoverflow.com",
+                getHtmlLink(getStackoverflowUrl(query), String.format("Search stackoverflow: %s", query)),
+                "4");
 
-        send(inlineQuery, letMeGoogleThatForYou, lmgfty, google);
+        send(inlineQuery, letMeGoogleThatForYou, lmgfty, google, stackoverflow);
     }
 
     @SneakyThrows
@@ -83,6 +86,10 @@ public class Bot extends TelegramLongPollingBot {
 
     private static String getGoogleUrl(String query){
         return String.format("https://www.google.com/search?q=%s", urlEncode(query));
+    }
+
+    private static String getStackoverflowUrl(String query){
+       return String.format("https://stackoverflow.com/search?q=%s", urlEncode(query));
     }
 
     @Override
