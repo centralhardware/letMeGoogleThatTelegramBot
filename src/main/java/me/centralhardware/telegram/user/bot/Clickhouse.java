@@ -51,6 +51,16 @@ public class Clickhouse {
                     ORDER BY date_time
                     """)
                     .execute().get();
+            request.query("""
+                    CREATE TABLE IF NOT EXISTS letMeGoogleThatForYouStatistic_stat
+                    (
+                        date_time DateTime,
+                        chat_id BIGINT,
+                        time BIGINT
+                    )
+                    engine = MergeTree
+                    ORDER BY date_time;
+                     """).execute().get();
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -80,6 +90,36 @@ public class Clickhouse {
                 write(stream, from.getIsPremium() != null && from.getIsPremium());
                 write(stream, from.getLanguageCode());
                 write(stream,update.getInlineQuery().getQuery());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            try (ClickHouseResponse response = future.get()){
+
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
+    public void insertStat(Long chatId, Long time){
+        try (ClickHouseClient client = openConnection()){
+            ClickHouseRequest.Mutation request =  client
+                    .read(server)
+                    .write()
+                    .table("letMeGoogleThatForYouStatistic_stat")
+                    .format(ClickHouseFormat.RowBinary);
+
+            ClickHouseConfig config = request.getConfig();
+            CompletableFuture<ClickHouseResponse> future;
+
+            try (ClickHousePipedOutputStream stream = ClickHouseDataStreamFactory.getInstance()
+                    .createPipedOutputStream(config, (Runnable) null)){
+                future = request.data(stream.getInputStream()).execute();
+                write(stream, LocalDateTime.now());
+                write(stream,chatId);
+                writeNullable(stream, time);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

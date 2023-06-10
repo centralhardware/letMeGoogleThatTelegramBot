@@ -2,6 +2,7 @@ package me.centralhardware.telegram.user.bot;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,6 +14,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Bot extends TelegramLongPollingBot {
 
@@ -24,6 +26,8 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update){
+        StopWatch sw = StopWatch.createStarted();
+
         if (!update.hasInlineQuery()) return;
 
         CompletableFuture.runAsync(() -> clickhouse.insert(update));
@@ -54,6 +58,9 @@ public class Bot extends TelegramLongPollingBot {
                 "4");
 
         send(inlineQuery, letMeGoogleThatForYou, lmgfty, google, stackoverflow);
+
+        sw.stop();
+        CompletableFuture.runAsync(() -> clickhouse.insertStat(inlineQuery.getFrom().getId(), sw.getTime(TimeUnit.MILLISECONDS)));
     }
 
     @SneakyThrows
