@@ -1,5 +1,6 @@
 package me.centralhardware.telegram.user.bot;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class Bot extends TelegramLongPollingBot {
 
@@ -24,13 +26,26 @@ public class Bot extends TelegramLongPollingBot {
        super(System.getenv("BOT_TOKEN"));
    }
 
+   private final List<Function<String, InlineQueryResultArticle>> articles = List.of(
+           query -> getArticle("letmegooglethat.com",
+                   getHtmlLink(getLetMeGoogleThatUrl(query), query),
+                   "1"),
+           query -> getArticle("lmgtfy.app",
+                   getHtmlLink(getLmgtfyUrl(query), query),
+                   "2"),
+           query -> getArticle("google.com",
+                   getHtmlLink(getGoogleUrl(query), query),
+                   "3"),
+           query -> getArticle("stackoverflow.com",
+                   getHtmlLink(getStackoverflowUrl(query), String.format("Search stackoverflow: %s", query)),
+                   "4")
+   );
+
     @Override
     public void onUpdateReceived(Update update){
         StopWatch sw = StopWatch.createStarted();
 
         if (!update.hasInlineQuery()) return;
-
-        CompletableFuture.runAsync(() -> clickhouse.insert(update));
 
         InlineQuery inlineQuery = update.getInlineQuery();
 
@@ -41,32 +56,21 @@ public class Bot extends TelegramLongPollingBot {
             var usePastebin = getArticle("use pastebin",
                     "Please use pastebin.com, gist.github.com for share code or other long read text material",
                     "2");
-            send(inlineQuery, shrugs, usePastebin);
+            send(inlineQuery, List.of(shrugs, usePastebin));
         }
 
-        var letMeGoogleThatForYou = getArticle("letmegooglethat.com",
-                getHtmlLink(getLetMeGoogleThatUrl(query), query),
-                "1");
-        var lmgfty = getArticle("lmgtfy.app",
-                getHtmlLink(getLmgtfyUrl(query), query),
-                "2");
-        var google = getArticle("google.com",
-                getHtmlLink(getGoogleUrl(query), query),
-                "3");
-        var stackoverflow = getArticle("stackoverflow.com",
-                getHtmlLink(getStackoverflowUrl(query), String.format("Search stackoverflow: %s", query)),
-                "4");
-
-        send(inlineQuery, letMeGoogleThatForYou, lmgfty, google, stackoverflow);
+        send(inlineQuery, articles.stream().map(it -> it.apply(query)).toList());
 
         sw.stop();
-        CompletableFuture.runAsync(() -> clickhouse.insertStat(inlineQuery.getFrom().getId(), sw.getTime(TimeUnit.MILLISECONDS)));
+        CompletableFuture.runAsync(() -> clickhouse.insert(update));
+        CompletableFuture.runAsync(() ->
+                clickhouse.insertStat(inlineQuery.getFrom().getId(), sw.getTime(TimeUnit.MILLISECONDS)));
     }
 
     @SneakyThrows
-    private void send(InlineQuery inlineQuery, InlineQueryResultArticle...article){
+    private void send(InlineQuery inlineQuery, List<InlineQueryResultArticle> article){
         AnswerInlineQuery answer = AnswerInlineQuery.builder()
-                .results(List.of(article))
+                .results(article)
                 .inlineQueryId(inlineQuery.getId())
                 .build();
         execute(answer);
@@ -108,8 +112,6 @@ public class Bot extends TelegramLongPollingBot {
        return String.format("https://stackoverflow.com/search?q=%s", urlEncode(query));
     }
 
-    @Override
-    public String getBotUsername() {
-        return System.getenv("BOT_USERNAME");
-    }
+    @Getter
+    public String botUsername = System.getenv("BOT_USERNAME");
 }
