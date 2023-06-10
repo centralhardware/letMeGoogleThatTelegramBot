@@ -119,7 +119,7 @@ public class Clickhouse {
                 future = request.data(stream.getInputStream()).execute();
                 write(stream, LocalDateTime.now());
                 write(stream,chatId);
-                writeNullable(stream, time);
+                write(stream, time);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
