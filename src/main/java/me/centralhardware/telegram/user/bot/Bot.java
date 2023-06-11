@@ -27,18 +27,22 @@ public class Bot extends TelegramLongPollingBot {
    }
 
    private final List<Function<String, InlineQueryResultArticle>> articles = List.of(
-           query -> getArticle("letmegooglethat.com",
+           query -> getArticle("1",
+                   "letmegooglethat.com",
                    getHtmlLink(getLetMeGoogleThatUrl(query), query),
-                   "1"),
-           query -> getArticle("lmgtfy.app",
+                   getIconUrl("letmegooglethat.com")),
+           query -> getArticle("2",
+                   "lmgtfy.app",
                    getHtmlLink(getLmgtfyUrl(query), query),
-                   "2"),
-           query -> getArticle("google.com",
+                   getIconUrl("lmgtfy.app")),
+           query -> getArticle("3",
+                   "google.com",
                    getHtmlLink(getGoogleUrl(query), query),
-                   "3"),
-           query -> getArticle("stackoverflow.com",
+                   getIconUrl("google.com")),
+           query -> getArticle("4",
+                   "stackoverflow.com",
                    getHtmlLink(getStackoverflowUrl(query), String.format("Search stackoverflow: %s", query)),
-                   "4")
+                   getIconUrl("stackoverflow.com"))
    );
 
     @Override
@@ -52,10 +56,11 @@ public class Bot extends TelegramLongPollingBot {
         String query = inlineQuery.getQuery();
 
         if (StringUtils.isBlank(query)){
-            var shrugs = getArticle("shrugs",  "¯\\_(ツ)_/¯", "1");
+            var shrugs = getArticle("shrugs",  "¯\\_(ツ)_/¯", "1", "");
             var usePastebin = getArticle("use pastebin",
                     "Please use pastebin.com, gist.github.com for share code or other long read text material",
-                    "2");
+                    "2",
+                    "");
             send(inlineQuery, List.of(shrugs, usePastebin));
         }
 
@@ -76,7 +81,10 @@ public class Bot extends TelegramLongPollingBot {
         execute(answer);
     }
 
-    private InlineQueryResultArticle getArticle(String title, String content, String id){
+    private InlineQueryResultArticle getArticle(String id,
+                                                String title,
+                                                String content,
+                                                String thumbUrl){
         return InlineQueryResultArticle.builder()
                 .id(id)
                 .title(title)
@@ -85,6 +93,7 @@ public class Bot extends TelegramLongPollingBot {
                         .parseMode("HTML")
                         .disableWebPagePreview(true)
                         .build())
+                .thumbUrl(thumbUrl)
                 .build();
     }
 
@@ -110,6 +119,10 @@ public class Bot extends TelegramLongPollingBot {
 
     private static String getStackoverflowUrl(String query){
        return String.format("https://stackoverflow.com/search?q=%s", urlEncode(query));
+    }
+
+    private static String getIconUrl(String site){
+        return String.format("https://www.google.com/s2/favicons?sz=64&domain_url=%s", site);
     }
 
     @Getter
