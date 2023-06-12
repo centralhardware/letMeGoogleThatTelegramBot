@@ -58,8 +58,8 @@ public class Bot extends TelegramLongPollingBot {
         if (StringUtils.isBlank(query)){
             var shrugs = getArticle("shrugs",  "¯\\_(ツ)_/¯", "1", "");
             var usePastebin = getArticle("use pastebin",
-                    "Please use pastebin.com, gist.github.com for share code or other long read text material",
                     "2",
+                    "Please use pastebin.com, gist.github.com for share code or other long read text material",
                     "");
             send(inlineQuery, List.of(shrugs, usePastebin));
         }
