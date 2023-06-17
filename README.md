@@ -3,6 +3,7 @@
 Inline telegram bot that allow: 
 - Generate search link for following sites:
   - [letmegooglethat.com](letmegooglethat.com)
+  - [googlethatforyou.com](googlethatforyou.com)
   - [lmgtfy.app](lmgtfy.app)
   - [google.com](google.com)
   - [stackoverflow.com](stackoverflow.com)

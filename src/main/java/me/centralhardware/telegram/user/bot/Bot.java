@@ -32,14 +32,18 @@ public class Bot extends TelegramLongPollingBot {
                    getHtmlLink(getLetMeGoogleThatUrl(query), query),
                    getIconUrl("letmegooglethat.com")),
            query -> getArticle("2",
+                   "googlethatforyou.com",
+                   getHtmlLink(getGoogleThatForYou(query), query),
+                   getIconUrl("googlethatforyou.com")),
+           query -> getArticle("3",
                    "lmgtfy.app",
                    getHtmlLink(getLmgtfyUrl(query), query),
                    getIconUrl("lmgtfy.app")),
-           query -> getArticle("3",
+           query -> getArticle("4",
                    "google.com",
                    getHtmlLink(getGoogleUrl(query), query),
                    getIconUrl("google.com")),
-           query -> getArticle("4",
+           query -> getArticle("5",
                    "stackoverflow.com",
                    getHtmlLink(getStackoverflowUrl(query), String.format("Search stackoverflow: %s", query)),
                    getIconUrl("stackoverflow.com"))
@@ -107,6 +111,10 @@ public class Bot extends TelegramLongPollingBot {
 
     private static String getLetMeGoogleThatUrl(String query){
        return String.format("https://letmegooglethat.com/?q=%s", urlEncode(query));
+    }
+
+    private static String getGoogleThatForYou(String query){
+        return String.format("https://googlethatforyou.com?q=%s", urlEncode(query));
     }
 
     private static String getLmgtfyUrl(String query){
