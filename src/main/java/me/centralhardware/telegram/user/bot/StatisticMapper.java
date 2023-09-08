@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public interface StatisticMapper {
 
     @Insert("""
-            INSERT INTO default.letMeGoogleThatForYouStatistic (
+            INSERT INTO letMeGoogleThatForYouStatistic (
                 date_time,
                 chat_id,
                 username,
@@ -60,7 +60,7 @@ public interface StatisticMapper {
     }
 
     @Insert("""
-            INSERT INTO default.letMeGoogleThatForYouStatistic_stat (
+            INSERT INTO letMeGoogleThatForYouStatistic_stat (
                 date_time,
                 chat_id,
                 time
