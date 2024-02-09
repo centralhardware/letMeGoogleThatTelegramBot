@@ -1,11 +1,11 @@
 import com.clickhouse.jdbc.ClickHouseDataSource
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
 import dev.inmo.tgbotapi.types.InlineQueries.InlineQueryResult.InlineQueryResultArticle
 import dev.inmo.tgbotapi.types.InlineQueries.InputMessageContent.InputTextMessageContent
 import dev.inmo.tgbotapi.types.message.HTML
-import korlibs.time.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotliquery.queryOf
@@ -66,7 +66,7 @@ val articles = listOf<(String) -> InlineQueryResultArticle>(
         getArticle(
             "2",
             "googlethatforyou.com",
-            getHtmlLink(getLetMeGoogleThatUrl(query!!), query),
+            getHtmlLink(getGoogleThatForYou(query!!), query),
             getIconUrl("googlethatforyou.com")
         )
     },
@@ -75,7 +75,7 @@ val articles = listOf<(String) -> InlineQueryResultArticle>(
         getArticle(
             "3",
             "lmgtfy.app",
-            getHtmlLink(getLetMeGoogleThatUrl(query!!), query),
+            getHtmlLink(getLmgtfyUrl(query!!), query),
             getIconUrl("lmgtfy.app")
         )
     },
@@ -84,7 +84,7 @@ val articles = listOf<(String) -> InlineQueryResultArticle>(
         getArticle(
             "4",
             "google.com",
-            getHtmlLink(getLetMeGoogleThatUrl(query!!), query),
+            getHtmlLink(getGoogleUrl(query!!), query),
             getIconUrl("google.com")
         )
     },
@@ -93,7 +93,7 @@ val articles = listOf<(String) -> InlineQueryResultArticle>(
         getArticle(
             "5",
             "stackoverflow.com",
-            getHtmlLink(getLetMeGoogleThatUrl(query!!), query),
+            getHtmlLink(getStackoverflowUrl(query!!), query),
             getIconUrl("stackoverflow.com")
         )
     }
@@ -118,9 +118,9 @@ suspend fun main() {
                 return@onAnyInlineQuery
             }
 
-            answer(
+            answerInlineQuery(
                 it,
-                articles.map { article -> article.invoke(it.query) }
+                results = articles.map { article -> article.invoke(it.query) },
             )
 
             val session = sessionOf(dataSource)
