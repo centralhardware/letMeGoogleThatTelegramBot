@@ -1,18 +1,15 @@
-FROM maven:3.9.4-amazoncorretto-21 as maven
+FROM gradle:jdk21-graal as gradle
 
 COPY ./ ./
 
-RUN mvn package
+RUN gradle fatJar
 
-FROM openjdk:21-slim
+FROM findepi/graalvm:java21
 
 WORKDIR /znatokiBot
 
-COPY --from=maven target/letMeGoogleThatForYou-1.0-SNAPSHOT.jar .
+COPY --from=gradle /home/gradle/build/libs/letMeGoogleThatForYou-1.0-SNAPSHOT-standalone.jar .
 
-RUN apt update -y && \
-    apt upgrade -y
+CMD ["java", "-jar", "letMeGoogleThatForYou-1.0-SNAPSHOT-standalone.jar" ]
 
-ENV TZ Asia/Novosibirsk
 
-CMD ["java", "-jar", "letMeGoogleThatForYou-1.0-SNAPSHOT.jar" ]
