@@ -49,7 +49,8 @@ private fun getArticle(
     id,
     title,
     InputTextMessageContent(content, HTML),
-    thumbnailUrl = thumbUrl
+    thumbnailUrl = thumbUrl,
+    hideUrl = true
 )
 
 val articles = listOf<(String) -> InlineQueryResultArticle>(
