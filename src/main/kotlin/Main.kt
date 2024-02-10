@@ -5,6 +5,7 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAn
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
 import dev.inmo.tgbotapi.types.InlineQueries.InlineQueryResult.InlineQueryResultArticle
 import dev.inmo.tgbotapi.types.InlineQueries.InputMessageContent.InputTextMessageContent
+import dev.inmo.tgbotapi.types.LinkPreviewOptions
 import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +49,7 @@ private fun getArticle(
 ): InlineQueryResultArticle = InlineQueryResultArticle(
     id,
     title,
-    InputTextMessageContent(content, HTML),
+    InputTextMessageContent(content, HTML, LinkPreviewOptions.Disabled),
     thumbnailUrl = thumbUrl,
     hideUrl = true
 )
@@ -122,11 +123,10 @@ suspend fun main() {
             answerInlineQuery(
                 it,
                 results = articles.map { article -> article.invoke(it.query) },
+
             )
 
-            val session = sessionOf(dataSource)
-
-            session.execute(queryOf(
+            sessionOf(dataSource).execute(queryOf(
                 """
                     INSERT INTO letMeGoogleThatForYouStatistic (
                         date_time,
