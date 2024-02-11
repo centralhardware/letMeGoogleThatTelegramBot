@@ -15,6 +15,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.sql.SQLException
 import java.time.LocalDateTime
+import java.util.concurrent.atomic.AtomicInteger
 import javax.sql.DataSource
 import kotlin.collections.map
 import kotlin.text.isBlank
@@ -29,17 +30,25 @@ private fun getHtmlLink(link: String, title: String): String = "<a href=\"${link
 
 private fun urlEncode(url: String): String = URLEncoder.encode(url, StandardCharsets.UTF_8)
 
-private fun getLetMeGoogleThatUrl(query: String): String = "https://letmegooglethat.com/?q=${urlEncode(query)}"
-
-private fun getGoogleThatForYou(query: String): String = "https://googlethatforyou.com?q=${urlEncode(query)}"
-
-private fun getLmgtfyUrl(query: String): String = "https://lmgtfy.app/?q=${urlEncode(query)}"
-
-private fun getGoogleUrl(query: String): String = "https://www.google.com/search?q=${urlEncode(query)}"
-
-private fun getStackoverflowUrl(query: String): String = "https://stackoverflow.com/search?q=${urlEncode(query)}"
-
 private fun getIconUrl(site: String): String = "https://www.google.com/s2/favicons?sz=64&domain_url=${site}"
+
+val services = mapOf(
+    "letmegooglethat.com" to "https://letmegooglethat.com/?q=",
+    "googlethatforyou.com" to "https://googlethatforyou.com?q=",
+    "lmgtfy.app" to "https://lmgtfy.app/?q=",
+    "www.google.com" to "https://www.google.com/search?q=",
+    "stackoverflow.com" to "https://stackoverflow.com/search?q="
+)
+
+fun getArticles(query: String): List<InlineQueryResultArticle>{
+    val i = AtomicInteger(1);
+    return services.map { getArticle(
+        i.getAndIncrement().toString(),
+        it.key,
+        getHtmlLink(it.value + urlEncode(query), query),
+        getIconUrl(it.key)
+    ) }
+}
 
 private fun getArticle(
     id: String,
@@ -54,56 +63,10 @@ private fun getArticle(
     hideUrl = true
 )
 
-val articles = listOf<(String) -> InlineQueryResultArticle>(
-    { query ->
-        getArticle(
-            "1",
-            "letmegooglethat.com",
-            getHtmlLink(getLetMeGoogleThatUrl(query!!), query),
-            getIconUrl("letmegooglethat.com")
-        )
-    },
-    {
-            query ->
-        getArticle(
-            "2",
-            "googlethatforyou.com",
-            getHtmlLink(getGoogleThatForYou(query!!), query),
-            getIconUrl("googlethatforyou.com")
-        )
-    },
-    {
-            query ->
-        getArticle(
-            "3",
-            "lmgtfy.app",
-            getHtmlLink(getLmgtfyUrl(query!!), query),
-            getIconUrl("lmgtfy.app")
-        )
-    },
-    {
-            query ->
-        getArticle(
-            "4",
-            "google.com",
-            getHtmlLink(getGoogleUrl(query!!), query),
-            getIconUrl("google.com")
-        )
-    },
-    {
-            query ->
-        getArticle(
-            "5",
-            "stackoverflow.com",
-            getHtmlLink(getStackoverflowUrl(query!!), query),
-            getIconUrl("stackoverflow.com")
-        )
-    }
-)
-
 suspend fun main() {
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"), CoroutineScope(Dispatchers.IO)) {
         onAnyInlineQuery {
+            println(it.query)
             if (it.query.isBlank()) {
                 answer(
                     it,
@@ -122,8 +85,7 @@ suspend fun main() {
 
             answerInlineQuery(
                 it,
-                results = articles.map { article -> article.invoke(it.query) },
-
+                results = getArticles(it.query)
             )
 
             sessionOf(dataSource).execute(queryOf(
