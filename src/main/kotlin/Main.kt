@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotliquery.queryOf
 import kotliquery.sessionOf
+import org.slf4j.LoggerFactory
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.sql.SQLException
@@ -19,6 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.sql.DataSource
 import kotlin.collections.map
 import kotlin.text.isBlank
+
+val log = LoggerFactory.getLogger("root")
 
 val dataSource: DataSource = try {
     ClickHouseDataSource(System.getenv("CLICKHOUSE_URL"))
@@ -66,7 +69,7 @@ private fun getArticle(
 suspend fun main() {
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"), CoroutineScope(Dispatchers.IO)) {
         onAnyInlineQuery {
-            println(it.query)
+            log.info(it.query)
             if (it.query.isBlank()) {
                 answer(
                     it,
