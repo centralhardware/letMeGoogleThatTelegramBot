@@ -67,9 +67,13 @@ private fun getArticle(
 )
 
 suspend fun main() {
-    telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"), CoroutineScope(Dispatchers.IO)) {
+    val clickhouse = Clickhouse()
+    telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
+        CoroutineScope(Dispatchers.IO),
+        defaultExceptionsHandler = { log.warn("", it)}) {
         onAnyInlineQuery {
             log.info(it.query)
+            clickhouse.log(it.query, it.user)
             if (it.query.isBlank()) {
                 answer(
                     it,
