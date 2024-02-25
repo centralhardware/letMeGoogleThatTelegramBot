@@ -8,9 +8,11 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven { setUrl("https://jitpack.io") }
 }
 
 dependencies {
+    implementation("com.github.centralhardware:telegram-bot-commons:main-SNAPSHOT")
     implementation("dev.inmo:tgbotapi:10.0.0")
     implementation("org.slf4j:slf4j-simple:2.0.11")
     implementation("org.slf4j:slf4j-api:2.0.12")
