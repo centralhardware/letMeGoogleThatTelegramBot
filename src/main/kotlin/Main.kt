@@ -73,7 +73,7 @@ suspend fun main() {
         defaultExceptionsHandler = { log.warn("", it)}) {
         onAnyInlineQuery {
             log.info(it.query)
-            clickhouse.log(it.query, true, it.user, it.user.id.chatId)
+            clickhouse.log(it.query, true, it.user, "letMeGoogleThatForYou")
             if (it.query.isBlank()) {
                 answer(
                     it,
