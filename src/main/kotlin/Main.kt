@@ -13,6 +13,7 @@ import kotlinx.coroutines.async
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import me.centralhardware.telegram.bot.common.ClickhouseKt
+import me.centralhardware.telegram.bot.common.MessageType
 import org.slf4j.LoggerFactory
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -75,7 +76,7 @@ suspend fun main() {
         defaultExceptionsHandler = { log.warn("", it)}) {
         onAnyInlineQuery {
             log.info(it.query)
-            async { clickhouse.log(it.query, true, it.user, "letMeGoogleThatForYou") }
+            async { clickhouse.log(it.query, it.user, "letMeGoogleThatForYou", MessageType.INLINE) }
             if (it.query.isBlank()) {
                 answer(
                     it,
