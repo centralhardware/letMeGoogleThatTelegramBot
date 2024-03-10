@@ -97,38 +97,6 @@ suspend fun main() {
                 it,
                 results = getArticles(it.query)
             )
-
-            sessionOf(dataSource).execute(queryOf(
-                """
-                    INSERT INTO letMeGoogleThatForYouStatistic (
-                        date_time,
-                        chat_id,
-                        username,
-                        first_name,
-                        last_name,
-                        lang,
-                        is_premium,
-                        text
-                    ) VALUES (
-                        :dateTime,
-                        :chatId,
-                        :username,
-                        :firstName,
-                        :lastName,
-                        :lang,
-                        :isPremium,
-                        :text
-                    )
-                """,
-                mapOf("dateTime" to LocalDateTime.now(),
-                    "chatId" to it.from.id.chatId,
-                    "username" to it.user.username,
-                    "firstName" to it.user.firstName,
-                    "lastName" to it.user.lastName,
-                    "lang" to it.user.languageCode,
-                    "isPremium" to it.user.isPremium,
-                    "text" to it.query)
-            ))
         }
     }.second.join()
 }
