@@ -5,6 +5,7 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAn
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
 import dev.inmo.tgbotapi.types.InlineQueries.InlineQueryResult.InlineQueryResultArticle
 import dev.inmo.tgbotapi.types.InlineQueries.InputMessageContent.InputTextMessageContent
+import dev.inmo.tgbotapi.types.InlineQueryId
 import dev.inmo.tgbotapi.types.LinkPreviewOptions
 import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +63,7 @@ private fun getArticle(
     content: String,
     thumbUrl: String
 ): InlineQueryResultArticle = InlineQueryResultArticle(
-    id,
+    InlineQueryId(id),
     title,
     InputTextMessageContent(content, HTML, LinkPreviewOptions.Disabled),
     thumbnailUrl = thumbUrl,
