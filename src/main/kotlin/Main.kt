@@ -1,4 +1,3 @@
-import com.clickhouse.jdbc.ClickHouseDataSource
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
@@ -11,27 +10,14 @@ import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotliquery.queryOf
-import kotliquery.sessionOf
 import me.centralhardware.telegram.bot.common.ClickhouseKt
 import me.centralhardware.telegram.bot.common.MessageType
 import org.slf4j.LoggerFactory
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import java.sql.SQLException
-import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicInteger
-import javax.sql.DataSource
-import kotlin.collections.map
-import kotlin.text.isBlank
 
 val log = LoggerFactory.getLogger("root")
-
-val dataSource: DataSource = try {
-    ClickHouseDataSource(System.getenv("CLICKHOUSE_URL"))
-} catch (e: SQLException) {
-    throw RuntimeException(e)
-}
 
 private fun getHtmlLink(link: String, title: String): String = "<a href=\"${link}\">${title}</a>"
 
@@ -47,14 +33,16 @@ val services = mapOf(
     "stackoverflow.com" to "https://stackoverflow.com/search?q="
 )
 
-fun getArticles(query: String): List<InlineQueryResultArticle>{
+fun getArticles(query: String): List<InlineQueryResultArticle> {
     val i = AtomicInteger(1);
-    return services.map { getArticle(
-        i.getAndIncrement().toString(),
-        it.key,
-        getHtmlLink(it.value + urlEncode(query), query),
-        getIconUrl(it.key)
-    ) }
+    return services.map {
+        getArticle(
+            i.getAndIncrement().toString(),
+            it.key,
+            getHtmlLink(it.value + urlEncode(query), query),
+            getIconUrl(it.key)
+        )
+    }
 }
 
 private fun getArticle(
@@ -74,7 +62,7 @@ suspend fun main() {
     val clickhouse = ClickhouseKt()
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
         CoroutineScope(Dispatchers.IO),
-        defaultExceptionsHandler = { log.warn("", it)}) {
+        defaultExceptionsHandler = { log.warn("", it) }) {
         onAnyInlineQuery {
             log.info(it.query)
             async { clickhouse.log(it.query, it.user, "letMeGoogleThatForYou", MessageType.INLINE) }
