@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation("com.github.centralhardware:telegram-bot-commons:2a55dd22e2")
-    implementation("dev.inmo:tgbotapi:13.0.0")
+    implementation("dev.inmo:tgbotapi:14.0.0")
     implementation("org.slf4j:slf4j-simple:2.0.11")
     implementation("org.slf4j:slf4j-api:2.0.12")
     implementation("ch.qos.logback:logback-classic:1.5.0")
