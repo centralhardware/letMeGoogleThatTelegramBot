@@ -49,7 +49,7 @@ private fun getArticle(
     id: String,
     title: String,
     content: String,
-    thumbUrl: String
+    thumbUrl: String = ""
 ): InlineQueryResultArticle = InlineQueryResultArticle(
     InlineQueryId(id),
     title,
@@ -70,12 +70,13 @@ suspend fun main() {
                 answer(
                     it,
                     listOf(
-                        getArticle("1", "shrugs", "¯\\_(ツ)_/¯", ""),
+                        getArticle("1", "shrugs", "¯\\_(ツ)_/¯"),
+                        getArticle("2", "nometa", "nometa.xyz"),
+                        getArticle("3", "How do I ask a good question?", "https://stackoverflow.com/help/how-to-ask"),
                         getArticle(
-                            "2",
+                            "4",
                             "use pastebin",
-                            "Please use pastebin.com, gist.github.com for share code or other long read text material",
-                            ""
+                            "Please use pastebin.com, gist.github.com for share code or other long read text material"
                         )
                     )
                 )
