@@ -9,9 +9,6 @@ import dev.inmo.tgbotapi.types.LinkPreviewOptions
 import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import me.centralhardware.telegram.bot.common.ClickhouseKt
-import me.centralhardware.telegram.bot.common.MessageType
 import org.slf4j.LoggerFactory
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -59,13 +56,11 @@ private fun getArticle(
 )
 
 suspend fun main() {
-    val clickhouse = ClickhouseKt()
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
         CoroutineScope(Dispatchers.IO),
         defaultExceptionsHandler = { log.warn("", it) }) {
         onAnyInlineQuery {
             log.info(it.query)
-            async { clickhouse.log(it.query, it.user, "letMeGoogleThatForYou", MessageType.INLINE) }
             if (it.query.isBlank()) {
                 answer(
                     it,

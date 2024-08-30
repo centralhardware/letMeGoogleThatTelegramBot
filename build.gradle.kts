@@ -1,6 +1,6 @@
 
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.20"
 }
 
 group = "me.centralhardware"
@@ -8,18 +8,15 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven { setUrl("https://jitpack.io") }
 }
 
 dependencies {
-    implementation("com.github.centralhardware:telegram-bot-commons:2a55dd22e2")
-    implementation("dev.inmo:tgbotapi:14.0.0")
-    implementation("org.slf4j:slf4j-simple:2.0.11")
-    implementation("org.slf4j:slf4j-api:2.0.12")
-    implementation("ch.qos.logback:logback-classic:1.5.0")
-    implementation("ch.qos.logback:logback-core:1.5.0")
+    implementation("dev.inmo:tgbotapi:17.0.0")
+    implementation("org.slf4j:slf4j-simple:2.0.16")
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("ch.qos.logback:logback-classic:1.5.7")
+    implementation("ch.qos.logback:logback-core:1.5.7")
     implementation("com.github.seratch:kotliquery:1.9.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
 tasks.test {
