@@ -1,3 +1,4 @@
+import com.sun.net.httpserver.HttpServer
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
@@ -10,6 +11,7 @@ import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.slf4j.LoggerFactory
+import java.net.InetSocketAddress
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
@@ -56,6 +58,7 @@ private fun getArticle(
 )
 
 suspend fun main() {
+    HttpServer.create().apply { bind(InetSocketAddress(80), 0); createContext("/health") { it.sendResponseHeaders(200, 0); it.responseBody.close() }; start() }
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
         CoroutineScope(Dispatchers.IO),
         defaultExceptionsHandler = { log.warn("", it) }) {
