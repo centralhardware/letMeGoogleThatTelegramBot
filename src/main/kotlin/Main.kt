@@ -1,4 +1,9 @@
 import com.sun.net.httpserver.HttpServer
+import dev.inmo.kslog.common.KSLog
+import dev.inmo.kslog.common.LogLevel
+import dev.inmo.kslog.common.info
+import dev.inmo.kslog.common.setDefaultKSLog
+import dev.inmo.kslog.common.warning
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
@@ -10,13 +15,10 @@ import dev.inmo.tgbotapi.types.LinkPreviewOptions
 import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
-
-val log = LoggerFactory.getLogger("root")
 
 private fun getHtmlLink(link: String, title: String): String = "<a href=\"${link}\">${title}</a>"
 
@@ -59,11 +61,12 @@ private fun getArticle(
 
 suspend fun main() {
     HttpServer.create().apply { bind(InetSocketAddress(80), 0); createContext("/health") { it.sendResponseHeaders(200, 0); it.responseBody.close() }; start() }
+    setDefaultKSLog(KSLog("letMeGoogleThatForYou", minLoggingLevel = LogLevel.INFO))
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
         CoroutineScope(Dispatchers.IO),
-        defaultExceptionsHandler = { log.warn("", it) }) {
+        defaultExceptionsHandler = { KSLog.warning("", it) }) {
         onAnyInlineQuery {
-            log.info(it.query)
+            KSLog.info(it.query)
             if (it.query.isBlank()) {
                 answer(
                     it,

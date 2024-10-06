@@ -10,15 +10,8 @@ repositories {
     mavenCentral()
 }
 
-val logbackVersion = "1.5.8";
-val slf4jVersion = "2.0.16";
-
 dependencies {
     implementation("dev.inmo:tgbotapi:18.2.1")
-    implementation("org.slf4j:slf4j-simple:$slf4jVersion")
-    implementation("org.slf4j:slf4j-api:$slf4jVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("ch.qos.logback:logback-core:$logbackVersion")
     implementation("com.github.seratch:kotliquery:1.9.0")
 }
 
