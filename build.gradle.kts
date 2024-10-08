@@ -8,18 +8,17 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 dependencies {
     implementation("dev.inmo:tgbotapi:18.2.1")
+    implementation("com.github.centralhardware:telegram-bot-commons:efefa401e3")
     implementation("com.github.seratch:kotliquery:1.9.0")
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
 }
 
 tasks {

@@ -1,9 +1,8 @@
-import com.sun.net.httpserver.HttpServer
 import dev.inmo.kslog.common.KSLog
-import dev.inmo.kslog.common.LogLevel
+import dev.inmo.kslog.common.configure
 import dev.inmo.kslog.common.info
-import dev.inmo.kslog.common.setDefaultKSLog
 import dev.inmo.kslog.common.warning
+import dev.inmo.tgbotapi.bot.ktor.HealthCheckKtorPipelineStepsHolder
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
@@ -15,7 +14,6 @@ import dev.inmo.tgbotapi.types.LinkPreviewOptions
 import dev.inmo.tgbotapi.types.message.HTML
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.net.InetSocketAddress
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
@@ -59,12 +57,13 @@ private fun getArticle(
     hideUrl = true
 )
 
+val healthChecker = HealthCheckKtorPipelineStepsHolder()
 suspend fun main() {
-    HttpServer.create().apply { bind(InetSocketAddress(80), 0); createContext("/health") { it.sendResponseHeaders(200, 0); it.responseBody.close() }; start() }
-    setDefaultKSLog(KSLog("letMeGoogleThatForYou", minLoggingLevel = LogLevel.INFO))
+    KSLog.configure("LetMeGoogleThatForYou")
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
         CoroutineScope(Dispatchers.IO),
-        defaultExceptionsHandler = { KSLog.warning("", it) }) {
+        defaultExceptionsHandler = { KSLog.warning("", it) },
+        builder = { pipelineStepsHolder = healthChecker }) {
         onAnyInlineQuery {
             KSLog.info(it.query)
             if (it.query.isBlank()) {
