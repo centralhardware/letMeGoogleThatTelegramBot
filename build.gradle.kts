@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation("dev.inmo:tgbotapi:18.2.1")
-    implementation("com.github.centralhardware:telegram-bot-commons:efefa401e3")
+    implementation("com.github.centralhardware:telegram-bot-commons:6be88e496b")
     implementation("com.github.seratch:kotliquery:1.9.0")
 }
 
