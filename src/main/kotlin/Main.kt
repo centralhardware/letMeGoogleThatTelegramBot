@@ -2,7 +2,7 @@ import dev.inmo.kslog.common.KSLog
 import dev.inmo.kslog.common.configure
 import dev.inmo.kslog.common.info
 import dev.inmo.kslog.common.warning
-import dev.inmo.tgbotapi.bot.ktor.HealthCheckKtorPipelineStepsHolder
+import dev.inmo.tgbotapi.HealthCheck
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
@@ -57,13 +57,12 @@ private fun getArticle(
     hideUrl = true
 )
 
-val healthChecker = HealthCheckKtorPipelineStepsHolder()
 suspend fun main() {
     KSLog.configure("LetMeGoogleThatForYou")
     telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
         CoroutineScope(Dispatchers.IO),
-        defaultExceptionsHandler = { KSLog.warning("", it) },
-        builder = { pipelineStepsHolder = healthChecker }) {
+        defaultExceptionsHandler = { KSLog.warning("", it) }) {
+        HealthCheck.addBot(this)
         onAnyInlineQuery {
             KSLog.info(it.query)
             if (it.query.isBlank()) {
