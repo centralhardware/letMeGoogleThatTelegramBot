@@ -1,8 +1,9 @@
 import dev.inmo.kslog.common.KSLog
 import dev.inmo.kslog.common.configure
 import dev.inmo.kslog.common.info
-import dev.inmo.kslog.common.warning
 import dev.inmo.tgbotapi.HealthCheck
+import dev.inmo.tgbotapi.KSLogExceptionsHandler
+import dev.inmo.tgbotapi.botToken
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
@@ -59,9 +60,11 @@ private fun getArticle(
 
 suspend fun main() {
     KSLog.configure("LetMeGoogleThatForYou")
-    telegramBotWithBehaviourAndLongPolling(System.getenv("BOT_TOKEN"),
+    telegramBotWithBehaviourAndLongPolling(
+        botToken,
         CoroutineScope(Dispatchers.IO),
-        defaultExceptionsHandler = { KSLog.warning("", it) }) {
+        defaultExceptionsHandler = KSLogExceptionsHandler
+    ) {
         HealthCheck.addBot(this)
         onAnyInlineQuery {
             KSLog.info(it.query)
