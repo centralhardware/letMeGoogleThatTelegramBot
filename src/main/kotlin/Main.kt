@@ -1,20 +1,15 @@
 import dev.inmo.kslog.common.KSLog
 import dev.inmo.kslog.common.configure
 import dev.inmo.kslog.common.info
-import dev.inmo.tgbotapi.HealthCheck
-import dev.inmo.tgbotapi.KSLogExceptionsHandler
-import dev.inmo.tgbotapi.botToken
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
-import dev.inmo.tgbotapi.extensions.behaviour_builder.telegramBotWithBehaviourAndLongPolling
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
+import dev.inmo.tgbotapi.longPolling
 import dev.inmo.tgbotapi.types.InlineQueries.InlineQueryResult.InlineQueryResultArticle
 import dev.inmo.tgbotapi.types.InlineQueries.InputMessageContent.InputTextMessageContent
 import dev.inmo.tgbotapi.types.InlineQueryId
 import dev.inmo.tgbotapi.types.LinkPreviewOptions
 import dev.inmo.tgbotapi.types.message.HTML
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
@@ -60,12 +55,7 @@ private fun getArticle(
 
 suspend fun main() {
     KSLog.configure("LetMeGoogleThatForYou")
-    telegramBotWithBehaviourAndLongPolling(
-        botToken,
-        CoroutineScope(Dispatchers.IO),
-        defaultExceptionsHandler = KSLogExceptionsHandler
-    ) {
-        HealthCheck.addBot(this)
+    longPolling {
         onAnyInlineQuery {
             KSLog.info(it.query)
             if (it.query.isBlank()) {
