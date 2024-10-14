@@ -1,6 +1,6 @@
 import dev.inmo.kslog.common.KSLog
-import dev.inmo.kslog.common.configure
 import dev.inmo.kslog.common.info
+import dev.inmo.tgbotapi.AppConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
@@ -54,7 +54,7 @@ private fun getArticle(
 )
 
 suspend fun main() {
-    KSLog.configure("LetMeGoogleThatForYou")
+    AppConfig.init("letMeGoogleThatForYou")
     longPolling {
         onAnyInlineQuery {
             KSLog.info(it.query)
