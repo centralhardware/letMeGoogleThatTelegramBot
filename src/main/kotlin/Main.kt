@@ -18,18 +18,20 @@ private fun getHtmlLink(link: String, title: String): String = "<a href=\"${link
 
 private fun urlEncode(url: String): String = URLEncoder.encode(url, StandardCharsets.UTF_8)
 
-private fun getIconUrl(site: String): String = "https://www.google.com/s2/favicons?sz=64&domain_url=${site}"
+private fun getIconUrl(site: String): String =
+    "https://www.google.com/s2/favicons?sz=64&domain_url=${site}"
 
-val services = mapOf(
-    "letmegooglethat.com" to "https://letmegooglethat.com/?q=",
-    "googlethatforyou.com" to "https://googlethatforyou.com?q=",
-    "lmgtfy.app" to "https://lmgtfy.app/?q=",
-    "www.google.com" to "https://www.google.com/search?q=",
-    "stackoverflow.com" to "https://stackoverflow.com/search?q="
-)
+val services =
+    mapOf(
+        "letmegooglethat.com" to "https://letmegooglethat.com/?q=",
+        "googlethatforyou.com" to "https://googlethatforyou.com?q=",
+        "lmgtfy.app" to "https://lmgtfy.app/?q=",
+        "www.google.com" to "https://www.google.com/search?q=",
+        "stackoverflow.com" to "https://stackoverflow.com/search?q="
+    )
 
 fun getArticles(query: String): List<InlineQueryResultArticle> {
-    val i = AtomicInteger(1);
+    val i = AtomicInteger(1)
     return services.map {
         getArticle(
             i.getAndIncrement().toString(),
@@ -45,40 +47,44 @@ private fun getArticle(
     title: String,
     content: String,
     thumbUrl: String = ""
-): InlineQueryResultArticle = InlineQueryResultArticle(
-    InlineQueryId(id),
-    title,
-    InputTextMessageContent(content, HTML, LinkPreviewOptions.Disabled),
-    thumbnailUrl = thumbUrl,
-    hideUrl = true
-)
+): InlineQueryResultArticle =
+    InlineQueryResultArticle(
+        InlineQueryId(id),
+        title,
+        InputTextMessageContent(content, HTML, LinkPreviewOptions.Disabled),
+        thumbnailUrl = thumbUrl,
+        hideUrl = true
+    )
 
 suspend fun main() {
     AppConfig.init("letMeGoogleThatForYou")
     longPolling {
-        onAnyInlineQuery {
-            KSLog.info(it.query)
-            if (it.query.isBlank()) {
-                answer(
-                    it,
-                    listOf(
-                        getArticle("1", "shrugs", "¯\\_(ツ)_/¯"),
-                        getArticle("2", "nometa", "nometa.xyz"),
-                        getArticle("3", "How do I ask a good question?", "https://stackoverflow.com/help/how-to-ask"),
-                        getArticle(
-                            "4",
-                            "use pastebin",
-                            "Please use pastebin.com, gist.github.com for share code or other long read text material"
+            onAnyInlineQuery {
+                KSLog.info(it.query)
+                if (it.query.isBlank()) {
+                    answer(
+                        it,
+                        listOf(
+                            getArticle("1", "shrugs", "¯\\_(ツ)_/¯"),
+                            getArticle("2", "nometa", "nometa.xyz"),
+                            getArticle(
+                                "3",
+                                "How do I ask a good question?",
+                                "https://stackoverflow.com/help/how-to-ask"
+                            ),
+                            getArticle(
+                                "4",
+                                "use pastebin",
+                                "Please use pastebin.com, gist.github.com for share code or other long read text material"
+                            )
                         )
                     )
-                )
-                return@onAnyInlineQuery
-            }
+                    return@onAnyInlineQuery
+                }
 
-            answerInlineQuery(
-                it,
-                results = getArticles(it.query)
-            )
+                answerInlineQuery(it, results = getArticles(it.query))
+            }
         }
-    }.second.join()
+        .second
+        .join()
 }
