@@ -27,7 +27,7 @@ val services =
         "googlethatforyou.com" to "https://googlethatforyou.com?q=",
         "lmgtfy.app" to "https://lmgtfy.app/?q=",
         "www.google.com" to "https://www.google.com/search?q=",
-        "stackoverflow.com" to "https://stackoverflow.com/search?q="
+        "stackoverflow.com" to "https://stackoverflow.com/search?q=",
     )
 
 fun getArticles(query: String): List<InlineQueryResultArticle> {
@@ -37,7 +37,7 @@ fun getArticles(query: String): List<InlineQueryResultArticle> {
             i.getAndIncrement().toString(),
             it.key,
             getHtmlLink(it.value + urlEncode(query), query),
-            getIconUrl(it.key)
+            getIconUrl(it.key),
         )
     }
 }
@@ -46,14 +46,14 @@ private fun getArticle(
     id: String,
     title: String,
     content: String,
-    thumbUrl: String = ""
+    thumbUrl: String = "",
 ): InlineQueryResultArticle =
     InlineQueryResultArticle(
         InlineQueryId(id),
         title,
         InputTextMessageContent(content, HTML, LinkPreviewOptions.Disabled),
         thumbnailUrl = thumbUrl,
-        hideUrl = true
+        hideUrl = true,
     )
 
 suspend fun main() {
@@ -70,14 +70,14 @@ suspend fun main() {
                             getArticle(
                                 "3",
                                 "How do I ask a good question?",
-                                "https://stackoverflow.com/help/how-to-ask"
+                                "https://stackoverflow.com/help/how-to-ask",
                             ),
                             getArticle(
                                 "4",
                                 "use pastebin",
-                                "Please use pastebin.com, gist.github.com for share code or other long read text material"
-                            )
-                        )
+                                "Please use pastebin.com, gist.github.com for share code or other long read text material",
+                            ),
+                        ),
                     )
                     return@onAnyInlineQuery
                 }
