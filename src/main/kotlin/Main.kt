@@ -1,6 +1,8 @@
 import dev.inmo.kslog.common.KSLog
 import dev.inmo.kslog.common.info
+import dev.inmo.micro_utils.common.Warning
 import dev.inmo.tgbotapi.AppConfig
+import dev.inmo.tgbotapi.Trace
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
@@ -56,11 +58,12 @@ private fun getArticle(
         hideUrl = true,
     )
 
+@OptIn(Warning::class)
 suspend fun main() {
     AppConfig.init("letMeGoogleThatForYou")
     longPolling {
             onAnyInlineQuery {
-                KSLog.info(it.query)
+                Trace.save("query", mapOf("query" to it.query))
                 if (it.query.isBlank()) {
                     answer(
                         it,
