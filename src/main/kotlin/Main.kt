@@ -63,7 +63,6 @@ private fun getArticle(
 suspend fun main() {
     AppConfig.init("letMeGoogleThatForYou")
     var res = longPolling {
-        verifyUser(UserId(428985392.toChatId().chatId))
         onAnyInlineQuery {
             Trace.save("query", mapOf("query" to it.query))
             if (it.query.isBlank()) {
