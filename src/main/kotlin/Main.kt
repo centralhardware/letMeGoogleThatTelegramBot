@@ -3,16 +3,13 @@ import dev.inmo.tgbotapi.AppConfig
 import dev.inmo.tgbotapi.Trace
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
-import dev.inmo.tgbotapi.extensions.api.verifications.verifyUser
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
 import dev.inmo.tgbotapi.longPolling
 import dev.inmo.tgbotapi.types.InlineQueries.InlineQueryResult.InlineQueryResultArticle
 import dev.inmo.tgbotapi.types.InlineQueries.InputMessageContent.InputTextMessageContent
 import dev.inmo.tgbotapi.types.InlineQueryId
 import dev.inmo.tgbotapi.types.LinkPreviewOptions
-import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.HTML
-import dev.inmo.tgbotapi.types.toChatId
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
