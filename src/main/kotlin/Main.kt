@@ -1,17 +1,18 @@
-import dev.inmo.kslog.common.KSLog
-import dev.inmo.kslog.common.info
 import dev.inmo.micro_utils.common.Warning
 import dev.inmo.tgbotapi.AppConfig
 import dev.inmo.tgbotapi.Trace
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
+import dev.inmo.tgbotapi.extensions.api.verifications.verifyUser
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
 import dev.inmo.tgbotapi.longPolling
 import dev.inmo.tgbotapi.types.InlineQueries.InlineQueryResult.InlineQueryResultArticle
 import dev.inmo.tgbotapi.types.InlineQueries.InputMessageContent.InputTextMessageContent
 import dev.inmo.tgbotapi.types.InlineQueryId
 import dev.inmo.tgbotapi.types.LinkPreviewOptions
+import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.HTML
+import dev.inmo.tgbotapi.types.toChatId
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
@@ -61,33 +62,32 @@ private fun getArticle(
 @OptIn(Warning::class)
 suspend fun main() {
     AppConfig.init("letMeGoogleThatForYou")
-    longPolling {
-            onAnyInlineQuery {
-                Trace.save("query", mapOf("query" to it.query))
-                if (it.query.isBlank()) {
-                    answer(
-                        it,
-                        listOf(
-                            getArticle("1", "shrugs", "¯\\_(ツ)_/¯"),
-                            getArticle("2", "nometa", "nometa.xyz"),
-                            getArticle(
-                                "3",
-                                "How do I ask a good question?",
-                                "https://stackoverflow.com/help/how-to-ask",
-                            ),
-                            getArticle(
-                                "4",
-                                "use pastebin",
-                                "Please use pastebin.com, gist.github.com for share code or other long read text material",
-                            ),
+    var res = longPolling {
+        verifyUser(UserId(428985392.toChatId().chatId))
+        onAnyInlineQuery {
+            Trace.save("query", mapOf("query" to it.query))
+            if (it.query.isBlank()) {
+                answer(
+                    it,
+                    listOf(
+                        getArticle("1", "shrugs", "¯\\_(ツ)_/¯"),
+                        getArticle("2", "nometa", "nometa.xyz"),
+                        getArticle(
+                            "3",
+                            "How do I ask a good question?",
+                            "https://stackoverflow.com/help/how-to-ask",
                         ),
-                    )
-                    return@onAnyInlineQuery
-                }
-
-                answerInlineQuery(it, results = getArticles(it.query))
+                        getArticle(
+                            "4",
+                            "use pastebin",
+                            "Please use pastebin.com, gist.github.com for share code or other long read text material",
+                        ),
+                    ),
+                )
+                return@onAnyInlineQuery
             }
+
+            answerInlineQuery(it, results = getArticles(it.query))
         }
-        .second
-        .join()
+    }.second.join()
 }
