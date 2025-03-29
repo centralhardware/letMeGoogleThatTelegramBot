@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.inmo:tgbotapi:24.0.1")
+    implementation("dev.inmo:tgbotapi:24.0.2")
     implementation("com.github.centralhardware:ktgbotapi-commons:6ef1dde4fe")
     implementation("com.github.seratch:kotliquery:1.9.1")
 }
