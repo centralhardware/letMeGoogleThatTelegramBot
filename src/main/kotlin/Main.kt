@@ -73,7 +73,7 @@ suspend fun main() {
                         getArticle(
                             "4",
                             "use pastebin",
-                            "Please use pastebin.com, gist.github.com for share code or other long read text material",
+                            "Use pastebin.com or gist.github.com to share code or long text.\"",
                         ),
                     ),
                 )
