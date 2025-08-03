@@ -1,6 +1,5 @@
 import dev.inmo.micro_utils.common.Warning
 import dev.inmo.tgbotapi.AppConfig
-import dev.inmo.tgbotapi.Trace
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onAnyInlineQuery
@@ -52,8 +51,7 @@ private fun getArticle(
         InlineQueryId(id),
         title,
         InputTextMessageContent(content, HTML, LinkPreviewOptions.Disabled),
-        thumbnailUrl = thumbUrl,
-        hideUrl = true,
+        thumbnailUrl = thumbUrl
     )
 
 @OptIn(Warning::class)
@@ -61,7 +59,6 @@ suspend fun main() {
     AppConfig.init("letMeGoogleThatForYou")
     var res = longPolling {
         onAnyInlineQuery {
-            Trace.save("query", mapOf("query" to it.query))
             if (it.query.isBlank()) {
                 answer(
                     it,
