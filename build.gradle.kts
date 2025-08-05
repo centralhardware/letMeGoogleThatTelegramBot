@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.inmo:tgbotapi:27.1.0")
+    implementation("dev.inmo:tgbotapi:27.1.1")
     implementation("com.github.centralhardware:ktgbotapi-commons:beafbfc9a8")
 }
 
