@@ -11,9 +11,11 @@ repositories {
     maven("https://jitpack.io")
 }
 
+val ktgbotapiVersion = "27.1.2"
+
 dependencies {
-    implementation("dev.inmo:tgbotapi:27.1.2")
-    implementation("com.github.centralhardware:ktgbotapi-commons:beafbfc9a8")
+    implementation("dev.inmo:tgbotapi:$ktgbotapiVersion")
+    implementation("com.github.centralhardware:ktgbotapi-commons:$ktgbotapiVersion-1")
 }
 
 tasks.test {
