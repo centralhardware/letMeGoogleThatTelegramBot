@@ -15,7 +15,7 @@ val ktgbotapiVersion = "28.0.0"
 
 dependencies {
     implementation("dev.inmo:tgbotapi:$ktgbotapiVersion")
-    implementation("com.github.centralhardware:ktgbotapi-commons:$ktgbotapiVersion-1")
+    implementation("com.github.centralhardware:ktgbotapi-commons:$ktgbotapiVersion")
 }
 
 tasks.test {
