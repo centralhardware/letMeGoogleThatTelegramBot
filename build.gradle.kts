@@ -19,7 +19,6 @@ dependencies {
     implementation("com.github.centralhardware:ktgbotapi-commons:$ktgbotapiVersion")
 }
 
-
 jib {
     from {
         image = System.getenv("JIB_FROM_IMAGE") ?: "eclipse-temurin:24-jre"
