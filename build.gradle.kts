@@ -14,8 +14,10 @@ repositories {
 val ktgbotapiVersion = "30.0.2"
 
 dependencies {
-    implementation("dev.inmo:tgbotapi:$ktgbotapiVersion")
-    implementation("com.github.centralhardware:ktgbotapi-commons:$ktgbotapiVersion")
+    // Telegram Bot API
+    implementation("dev.inmo:tgbotapi:${ktgbotapiVersion}")
+    implementation("com.github.centralhardware:ktgbotapi-commons:${ktgbotapiVersion}")
+    implementation("com.github.centralhardware.ktgbotapi-middlewars:ktgbotapi-restrict-access-middleware:${ktgbotapiVersion}")
 }
 
 jib {
