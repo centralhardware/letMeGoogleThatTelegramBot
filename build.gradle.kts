@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.21"
-    id("com.google.cloud.tools.jib") version "3.5.1"
+    id("com.google.cloud.tools.jib") version "3.5.2"
 }
 
 group = "me.centralhardware"
